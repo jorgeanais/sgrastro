@@ -68,6 +68,9 @@ def main(f, bmin, bmax, lmin, lmax, d, sample=None, idname=""):
     # Load data
     logging.info("Loading data...")
     df, data = load_and_preproc(f, bmin, bmax, lmin, lmax, sample)
+
+    # Mean l and b
+    logging.info(f"Mean l and b: {data['pos_lb'].mean(axis=0)}")
     
 
     # Perform
