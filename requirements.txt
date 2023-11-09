@@ -1,0 +1,10 @@
+click
+joblib
+ipython
+numpy
+scipy
+scikit-learn
+matplotlib
+astropy
+pandas
+astroML
