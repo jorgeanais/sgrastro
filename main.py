@@ -16,7 +16,6 @@ from astroML.density_estimation import XDGMM
 from proc.pipeline import load_and_preproc
 
 
-N_COMPONENTS = 5
 MAX_ITER = 150
 
 
@@ -27,9 +26,10 @@ MAX_ITER = 150
 @click.option("-lmin", type=float, help="Minimim galactic longitude", required=True)
 @click.option("-lmax", type=float, help="Maximum galactic longitude", required=True)
 @click.option("-d", help="Output directory to save processed files", required=True)
+@click.option("-ncomp", default=5, type=int, help="Number of components, default 5")
 @click.option("-sample", type=int, help="Sample size", required=False)
 @click.option("-idname", help="Name", required=False)
-def main(f, bmin, bmax, lmin, lmax, d, sample=None, idname=""):
+def main(f, bmin, bmax, lmin, lmax, d, ncomp, sample=None, idname="", ):
     f = Path(f)  
     # Check input file exists
     if not f.exists():
@@ -62,7 +62,7 @@ def main(f, bmin, bmax, lmin, lmax, d, sample=None, idname=""):
     logging.info("Galactic longitude: %s %s", lmin, lmax)
     logging.info("Sample size: %s", sample)
     logging.info("Name: %s", idname)
-    logging.info("Number of components: %s", N_COMPONENTS)
+    logging.info("Number of components: %s", ncomp)
     logging.info("Maximum number of iterations: %s", MAX_ITER)
 
     # Load data
@@ -75,7 +75,7 @@ def main(f, bmin, bmax, lmin, lmax, d, sample=None, idname=""):
 
     # Perform
     logging.info("Fitting XDGMM...")
-    xdgmm = XDGMM(n_components=N_COMPONENTS, max_iter=MAX_ITER)
+    xdgmm = XDGMM(n_components=ncomp, max_iter=MAX_ITER)
     xdgmm.fit(data["astrom"], data["astrom_cov"])
 
     logging.info(f"Means: \n{xdgmm.mu}")
