@@ -1,3 +1,11 @@
+import os
+# Avoid automatic extra parallelization by other modules
+os.environ['OMP_NUM_THREADS'] = 1
+os.environ['OPENBLAS_NUM_THREADS'] = 1
+os.environ['MKL_NUM_THREADS'] = 1
+os.environ['VECLIB_MAXIMUM_THREADS'] = 1
+os.environ['NUMEXPR_NUM_THREADS'] = 1
+
 import click
 from joblib import dump
 import logging
@@ -9,7 +17,7 @@ from proc.pipeline import load_and_preproc
 
 
 N_COMPONENTS = 5
-MAX_ITER = 100
+MAX_ITER = 150
 
 
 @click.command()
@@ -22,7 +30,7 @@ MAX_ITER = 100
 @click.option("-sample", type=int, help="Sample size", required=False)
 @click.option("-idname", help="Name", required=False)
 def main(f, bmin, bmax, lmin, lmax, d, sample=None, idname=""):
-    f = Path(f)
+    f = Path(f)  
     # Check input file exists
     if not f.exists():
         raise FileNotFoundError(f"{f} not found")
