@@ -66,9 +66,12 @@ def main(f, bmin, bmax, lmin, lmax, d, sample=None, idname=""):
     logging.info("Maximum number of iterations: %s", MAX_ITER)
 
     # Load data
+    logging.info("Loading data...")
     df, data = load_and_preproc(f, bmin, bmax, lmin, lmax, sample)
+    
 
     # Perform
+    logging.info("Fitting XDGMM...")
     xdgmm = XDGMM(n_components=N_COMPONENTS, max_iter=MAX_ITER)
     xdgmm.fit(data["astrom"], data["astrom_cov"])
 
@@ -81,6 +84,7 @@ def main(f, bmin, bmax, lmin, lmax, d, sample=None, idname=""):
     )
 
     # Save
+    logging.info("Saving XDGMM model...")
     dump(xdgmm, d / f"xgmm_{idname}.joblib")
 
 
