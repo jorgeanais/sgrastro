@@ -27,9 +27,10 @@ MAX_ITER = 150
 @click.option("-lmax", type=float, help="Maximum galactic longitude", required=True)
 @click.option("-d", help="Output directory to save processed files", required=True)
 @click.option("-ncomp", default=5, type=int, help="Number of components, default 5")
+@click.option("-space", default="astrom", type=str, help="Space parameters (pm, astrom or astrom_corr)", required=False)
 @click.option("-sample", type=int, help="Sample size", required=False)
 @click.option("-idname", help="Name", required=False)
-def main(f, bmin, bmax, lmin, lmax, d, ncomp, sample=None, idname="", ):
+def main(f, bmin, bmax, lmin, lmax, d, ncomp, space, sample=None, idname="", ):
     f = Path(f)  
     # Check input file exists
     if not f.exists():
@@ -47,6 +48,10 @@ def main(f, bmin, bmax, lmin, lmax, d, ncomp, sample=None, idname="", ):
         raise ValueError(f"{bmin} >= {bmax}")
     elif lmin >= lmax:
         raise ValueError(f"{lmin} >= {lmax}")
+    
+    # Check space
+    if space not in ["pm", "astrom", "astrom_corr"]:
+        raise ValueError(f"{space} not in ['pm', 'astrom', 'astrom_corr']")
 
     # Initialize logger
     logging.basicConfig(
@@ -60,6 +65,7 @@ def main(f, bmin, bmax, lmin, lmax, d, ncomp, sample=None, idname="", ):
     logging.info("Output directory: %s", d)
     logging.info("Galactic latitude: %s %s", bmin, bmax)
     logging.info("Galactic longitude: %s %s", lmin, lmax)
+    logging.info("Space parameters: %s", space)
     logging.info("Sample size: %s", sample)
     logging.info("Name: %s", idname)
     logging.info("Number of components: %s", ncomp)
@@ -76,7 +82,7 @@ def main(f, bmin, bmax, lmin, lmax, d, ncomp, sample=None, idname="", ):
     # Perform
     logging.info("Fitting XDGMM...")
     xdgmm = XDGMM(n_components=ncomp, max_iter=MAX_ITER)
-    xdgmm.fit(data["astrom"], data["astrom_cov"])
+    xdgmm.fit(data[f"{space}"], data[f"{space}_cov"])  # pm, astrom, astrom_corr
 
     logging.info(f"Means: \n{xdgmm.mu}")
     logging.info(
