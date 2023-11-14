@@ -60,7 +60,15 @@ def get_subspace_data(
 
     # Add 2D proper motions
     output["pm_cov"] = get_correlation_matrix(
-        output["pm_err"][:, 0], output["pm_err"][:, 1], output["pm"]
+        output["pm_err"][:, 0],
+        output["pm_err"][:, 1],
+        output["pm"]
+    )
+
+    output["pm_corr_cov"] = get_correlation_matrix(
+        output["pm_err"][:, 0],
+        output["pm_err"][:, 1],
+        output["pm_corr"]
     )
 
     # Add 3D astrometry
